@@ -5,14 +5,13 @@
 #include <string>
 #include "Texture2D.h"
 #include "GameObject.h"
-#include "Transform.h"
 
-dae::RenderComponent::RenderComponent(const std::string& filename)
+dae::RenderComponent::RenderComponent(GameObject* owner,const std::string& filename) : Component(owner), m_Transform{}
 {
 	SetTexture(filename);
 }
 
-dae::RenderComponent::RenderComponent(std::shared_ptr<Texture2D> texture)
+dae::RenderComponent::RenderComponent(GameObject* owner, std::shared_ptr<Texture2D> texture) : Component{ owner }, m_Transform{}
 {
 	m_Texture = texture;
 }
@@ -20,6 +19,11 @@ dae::RenderComponent::RenderComponent(std::shared_ptr<Texture2D> texture)
 void dae::RenderComponent::SetTexture(const std::string& filename)
 {
 	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
+}
+
+void dae::RenderComponent::SetTexture(const std::shared_ptr<Texture2D> texture)
+{
+	m_Texture = texture;
 }
 
 void dae::RenderComponent::Render() const

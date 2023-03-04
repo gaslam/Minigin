@@ -4,6 +4,8 @@
 #include <vector>
 #include "string"
 #include <memory>
+#include <unordered_map>
+#include <typeindex>
 
 class Component;
 namespace dae
@@ -25,63 +27,55 @@ namespace dae
 		GameObject& operator=(const GameObject& other) = delete;
 		GameObject& operator=(GameObject&& other) = delete;
 
-		template<typename T>
-		void AddComponent(std::shared_ptr<T> component)
-		{
-			if (!IsComponentAdded<T>())
-			{
-				m_Components.emplace_back(component);
+		template <typename T, typename... Args> T* AddComponent(Args&&... args) {
+			if (IsComponentAdded<T>()) {
+				return nullptr;
 			}
-		}
+
+			const std::type_index typeIndex = std::type_index(typeid(T));
+			auto component = std::make_unique<T>(this, std::forward<Args>(args)...);
+			auto pointer = component.get();
+
+			m_Components.emplace(typeIndex, std::move(component));
+
+			return pointer;
+		};
 
 
 		//Didn't have time to fix this. I'll wait for feedback to see what can be improved.
 		template<typename T>
-		std::shared_ptr<Component> GetComponent() const
+		T* GetComponent() const
 		{
-			for (auto& component : m_Components)
+			const std::type_index typeIndex = std::type_index(typeid(T));
+			if (!m_Components.at(typeIndex))
 			{
-				if (typeid(T) == typeid(*component.get()))
-				{
-					return component;
-				}
+				return nullptr;
 			}
-			return nullptr;
+			auto component = dynamic_cast<T*>(m_Components.at(typeIndex).get());
+			return component;
 		}
 		template<typename T>
 		void RemoveComponent()
 		{
-			auto it = std::remove_if(m_Components.begin(), m_Components.end(), [&](std::shared_ptr<Component> comp1) {
-				if (typeid(T) == typeid(*comp1.get()))
-				{
-					return true;
-				}
-			return false;
-				});
+			const std::type_index typeIndex = std::type_index(typeid(T));
+			auto component = m_Components.at(typeIndex);
 
-			if (it != m_Components.end())
+			if (component)
 			{
-				m_Components.erase(it);
+				m_Components.erase(typeIndex);
 			}
 		}
 
 		template<typename T>
 		bool IsComponentAdded() const
 		{
-			auto it = std::find_if(m_Components.begin(), m_Components.end(), [&](std::shared_ptr<Component> comp1) {
-				if (typeid(T) == typeid(*comp1.get()))
-				{
-					return true;
-				}
-			return false;
-				});
+			const std::type_index typeIndex = std::type_index(typeid(T));
 
-			return it != m_Components.end();
+			return m_Components.contains(typeIndex);
 		}
 
 	private:
 		Transform m_transform{};
-		// todo: mmm, every gameobject has a texture? Is that correct?
-		std::vector<std::shared_ptr<Component>> m_Components{};
+		std::unordered_map<std::type_index,std::unique_ptr<Component>> m_Components{};
 	};
 }
