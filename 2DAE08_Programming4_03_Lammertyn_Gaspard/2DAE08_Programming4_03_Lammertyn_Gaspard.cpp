@@ -62,10 +62,6 @@ void ParseBOBJ(std::string& filePath, std::vector<Vector3>& normals, std::vector
 	{
 		while (!in.eof())
 		{
-			if (faces.size() == 2503)
-			{
-				std::cout << "test";
-			}
 			command = ' ';
 			in >> command;
 			if (command == '#' && std::getline(in, line, static_cast<char>(0xFF)))
@@ -82,12 +78,6 @@ void ParseBOBJ(std::string& filePath, std::vector<Vector3>& normals, std::vector
 			if (command == 'f')
 			{
 				faces.emplace_back(GetVectorFromFileStreamInBinary(in));
-				auto test = faces[faces.size() - 1];
-				if (faces.size() > 1)
-				{
-					auto test2 = faces[faces.size() - 2];
-					float testFl{};
-				}
 				continue;
 			}
 			if (command == 'vn')
