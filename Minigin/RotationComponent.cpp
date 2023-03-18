@@ -8,7 +8,7 @@ dae::RotationComponent::RotationComponent(GameObject* owner, float radius, float
 {
 	if (owner)
 	{
-		m_TransformComp = owner->GetComponent<Transform>();
+		m_TransformComp = owner->AddComponent<Transform>();
 		if (m_TransformComp)
 		{
 			m_Center = m_TransformComp->GetLocalPosition();

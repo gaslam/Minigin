@@ -15,6 +15,11 @@ void dae::GameObject::Update(float deltaTime)
 	{
 		component.second->Update(deltaTime);
 	}
+
+	for (auto& child : m_Children)
+	{
+		child->Update(deltaTime);
+	}
 }
 
 void dae::GameObject::Render() const
@@ -26,7 +31,7 @@ void dae::GameObject::Render() const
 	}
 }
 
-void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
+void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition = false)
 {
 	auto transform = GetComponent<Transform>();
 	if (transform == nullptr)
@@ -39,7 +44,7 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 	}
 	else
 	{
-		auto transformParent = parent->GetComponent<Transform>();
+		auto transformParent = parent == nullptr ? nullptr : parent->GetComponent<Transform>();
 		if (keepWorldPosition && transformParent != nullptr)
 		{
 			transform->SetLocalPosition(transform->GetLocalPosition() - transformParent->GetWorldPosition());
@@ -47,6 +52,13 @@ void dae::GameObject::SetParent(GameObject* parent, bool keepWorldPosition)
 		if (transform)
 		{
 			transform->SetPositionDirty();
+			for (auto& child : m_Children)
+			{
+				if (auto childTransform = child->GetComponent<Transform>())
+				{
+					childTransform->SetPositionDirty();
+				}
+			}
 		}
 	}
 

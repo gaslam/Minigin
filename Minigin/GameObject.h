@@ -32,7 +32,7 @@ namespace dae
 
 		template <typename T, typename... Args> T* AddComponent(Args&&... args) {
 			if (IsComponentAdded<T>()) {
-				return nullptr;
+				return GetComponent<T>();
 			}
 
 			const std::type_index typeIndex = std::type_index(typeid(T));
