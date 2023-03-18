@@ -84,7 +84,7 @@
     <ClInclude Include="..\3rdParty\imgui\backends\imgui_impl_opengl2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\3rdParty\imgui\backends\imgui_impl_sdl2.h">
+    <ClInclude Include="..\3rdParty\imgui\backends\imgui_impl_sdl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -152,7 +152,7 @@
     <ClCompile Include="..\3rdParty\imgui\backends\imgui_impl_opengl2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\3rdParty\imgui\backends\imgui_impl_sdl2.cpp">
+    <ClCompile Include="..\3rdParty\imgui\backends\imgui_impl_sdl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
