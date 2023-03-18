@@ -3,7 +3,7 @@
 #include "SceneManager.h"
 #include "Texture2D.h"
 #include <imgui.h>
-#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdl.h>
 #include <backends/imgui_impl_opengl2.h>
 
 int GetOpenGLDriverIndex()
